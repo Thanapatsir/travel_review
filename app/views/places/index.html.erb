@@ -15,6 +15,8 @@
   <tbody>
     <% @places.each do |place| %>
       <tr>
+
+        <td><%= image_tag place.image.url(:medium) %></td>
         <td><%= place.title %></td>
         <td><%= place.description %></td>
         <td><%= place.rating %></td>
