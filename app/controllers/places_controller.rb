@@ -1,5 +1,6 @@
 class PlacesController < ApplicationController
   before_action :set_place, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!, exept: [:index, :show]
 
   # GET /places
   # GET /places.json
@@ -14,7 +15,7 @@ class PlacesController < ApplicationController
 
   # GET /places/new
   def new
-    @place = Place.new
+    @place = current_user.places.build
   end
 
   # GET /places/1/edit
@@ -24,7 +25,7 @@ class PlacesController < ApplicationController
   # POST /places
   # POST /places.json
   def create
-    @place = Place.new(place_params)
+    @place = current_user.places.build(place_params)
 
     respond_to do |format|
       if @place.save
