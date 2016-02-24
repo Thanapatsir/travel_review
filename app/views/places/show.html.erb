@@ -1,20 +1,32 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-4">
+        <%= image_tag @place.image.url(:medium) %>
+        <div class="table-responsive">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td><strong>Title:</strong></td>
+                  <td><%= @place.title %></td>
+                </tr>
+                <tr>
+                  <td><strong>Description:</strong></td>
+                  <td><%= @place.description %></td>
+                </tr>
+                <tr>
+                  <td><strong>Rating:</strong></td>
+                  <td><%= @place.rating %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<%= image_tag @place.image.url(:medium) %>
 
-<p>
-  <strong>Title:</strong>
-  <%= @place.title %>
-</p>
-
-<p>
-  <strong>Description:</strong>
-  <%= @place.description %>
-</p>
-
-<p>
-  <strong>Rating:</strong>
-  <%= @place.rating %>
-</p>
 
 <%= link_to 'Edit', edit_place_path(@place) %> |
 <%= link_to 'Back', places_path %>
