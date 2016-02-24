@@ -19,12 +19,30 @@
                   <td><%= @place.rating %></td>
                 </tr>
               </tbody>
+
             </table>
+          <%= link_to 'Write a trip review', new_place_review_path(@place) %> |
           </div>
         </div>
+        <div class="col-md-4 col-md-offset-1">
+          <h2 class='review_title'>User reviews</h2>
+          <% if @reviews.blank? %>
+           <h3>No reviews, tell us about it!</h3>
+           <%= link_to "Write Review", new_place_review_path(@place), class: "btn btn-danger" %>
+          <% else %>
+            <% @reviews.each do |review| %>
+              <div class="reviews">
+                <div class="star-rating" data-score= <%= review.rating %> ></div>
+                <p><%= review.comment %></p>
+              </div>
+            <% end %>
+          <% end %>
       </div>
     </div>
   </div>
+
+
+
 
 
 
