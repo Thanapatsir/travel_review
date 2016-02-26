@@ -29,6 +29,8 @@ gem 'paperclip', '~> 4.3', '>= 4.3.5'
 
 gem 'bootstrap-sass', '~> 3.3', '>= 3.3.6'
 
+gem 'rack-cors', '~> 0.4.0'
+
 
 
 group :development, :test do

@@ -4,55 +4,172 @@
       <div class="col-md-4">
         <%= image_tag @place.image.url(:medium) %>
         <div class="table-responsive">
-            <table class="table">
-              <tbody>
-                <tr>
-                  <td><strong>Title:</strong></td>
-                  <td><%= @place.title %></td>
-                </tr>
-                <tr>
-                  <td><strong>Description:</strong></td>
-                  <td><%= @place.description %></td>
-                </tr>
-                <tr>
-                  <td><strong>Rating:</strong></td>
-                  <td><%= @place.rating %></td>
-                </tr>
-              </tbody>
+          <table class="table">
+            <tbody>
+              <tr>
+                <td>
+                  <strong>Title:</strong>
+                </td>
+                <td><%= @place.title %></td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Description:</strong>
+                </td>
+                <td><%= @place.description %></td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Rating:</strong>
+                </td>
+                <td><%= @place.rating %></td>
+              </tr>
+            </tbody>
 
-            </table>
-          <%= link_to 'Write a trip review', new_place_review_path(@place) %> |
-          </div>
+          </table>
+
+          <%= link_to 'Back', places_path, class: "btn btn-warning" %>
+          <%= link_to 'Edit', edit_place_path(@place), class: "btn btn-warning" %>
+          <%= link_to 'Write a trip review', new_place_review_path(@place), class: "btn btn-warning" %>
+
         </div>
-        <div class="col-md-4 col-md-offset-1">
-          <h2 class='review_title'>User reviews</h2>
-          <% if @reviews.blank? %>
-           <h3>No reviews, tell us about it!</h3>
-           <%= link_to "Write Review", new_place_review_path(@place), class: "btn btn-danger" %>
-          <% else %>
-            <% @reviews.each do |review| %>
-              <div class="reviews">
-                <div class="star-rating" data-score= <%= review.rating %> ></div>
-                <p><%= review.comment %></p>
-              </div>
-            <% end %>
-          <% end %>
+
       </div>
+      <div class="col-md-4">
+        <div id="map" style="height:300px;width:600px"></div>
+
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+              <tr>
+                <td>
+                  <strong>Destination:</strong>
+                </td>
+                <td><%= @place.title %></td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Distance from current location:</strong>
+                </td>
+                <td>
+                  <div id="results"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Time taken:</strong>
+                </td>
+                <td>
+                  hey
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <strong>Recommendation:</strong>
+                </td>
+                <td><%= @place.rating %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col-md-0">
+          <h3 class='review_title'>User reviews</h2>
+          <% if @reviews.blank? %>
+          <h4>No reviews, tell us about it!</h4>
+          <%= link_to "Write Review", new_place_review_path(@place), class: "btn btn-warning" %>
+        <% else %>
+          <% @reviews.each do |review| %>
+          <div class="reviews">
+            <div class="star-rating" data-score=<%= review.rating %>></div>
+            <p><%= review.comment %></p>
+            <p><%= review.user_id %></p>
+          </div>
+          <% end %>
+          <% end %>
+        </div>
+
+      </div>
+
     </div>
+
   </div>
 
-  <script>
-      $('.star-rating').raty({
-        path: '/assets/',
-        readOnly: true,
-        score: function() {
-              return $(this).attr('data-score');
-      }
+</div>
+
+<script>
+  $('.star-rating').raty({
+    path: '/assets/',
+    readOnly: true,
+    score: function () {
+      return $(this).attr('data-score');
+    }
+  });
+</script>
+<script>
+  var pos;
+  var map;
+  var infoWindow;
+  var result = document.getElementById("results");
+
+  // Note: This example requires that you consent to location sharing when prompted by your browser. If you see the error "The Geolocation service failed.", it means you probably did not give permission for the browser to locate you.
+
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {
+        lat: -34.397,
+        lng: 150.644
+      },
+      zoom: 6
     });
-  </script>
+    infoWindow = new google.maps.InfoWindow({map: map});
 
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
 
+        infoWindow.setPosition(pos);
+        infoWindow.setContent('Here is your current location.');
+        map.setCenter(pos);
+      }, function () {
+        handleLocationError(true, infoWindow, map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      handleLocationError(false, infoWindow, map.getCenter());
+    }
+  }
 
+  function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation
+      ? 'Error: The Geolocation service failed.'
+      : 'Error: Your browser doesn\'t support geolocation.');
+  }
 
-<%= link_to 'Edit', edit_place_path(@place) %> |
-<%= link_to 'Back', places_path %>
+  // $.ajax({      url: "https://maps.googleapis.com/maps/api/place/nearbysearch/json",          dataType: 'json',          header:{"Access-Control-Allow-Origin":"*"},          data:{location:"-33.8670522,151.1957362",                radius:500,
+  // type:"restaurant",                name:"cruise",                key:"AIzaSyCcn0b3h1NGv8n7L_fEE0TmjAUCXjBQkfI"              }        }).done(function(data){            console.log(data)        }); $('#output1').text(data.r1)
+  // $('#output2').text(data.r2) fail: function(){   console.log("BADDDDDDDD") }
+
+  
+  function getLocation() {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      var latLngA = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      var latLngB = new google.maps.LatLng(40.778721618334295, -73.96648406982422);
+      var distance = google.maps.geometry.spherical.computeDistanceBetween(latLngA, latLngB);
+      result.innerHTML = Math.round(distance) + " km";
+    }, function () {
+      alert("geolocation not supported!!");
+    });
+  }
+  getLocation();
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcn0b3h1NGv8n7L_fEE0TmjAUCXjBQkfI&libraries=geometry"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcn0b3h1NGv8n7L_fEE0TmjAUCXjBQkfI&libraries=places"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcn0b3h1NGv8n7L_fEE0TmjAUCXjBQkfI&signed_in=true&callback=initMap"></script>

@@ -1,19 +1,23 @@
 <% if !user_signed_in? %>
-  <div class="jumbotron">
-    <div class="container">
-      <h1>Hello, world!</h1>
-      <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-      <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
-    </div>
+<div class="jumbotron">
+  <div class="container">
+    <h1>Eazy trip</h1>
+    <p>How was your trip? enjoy it much? share it!!</p>
+    <p>Share your journey with other members in the community with a single click.</p>
+    <p>Sign up today and become part of the community, let us know whats your thought</p>
+    <p><%= link_to "Sign up now", new_user_registration_path, class: "btn btn-warning" %></p>
+
   </div>
+</div>
+
 <% end %>
 
 <div class="row">
   <% @places.each do |place| %>
-    <div class="col-sm-6 col-md-3">
-      <div class="thumbnail">
-        <%= link_to (image_tag place.image.url(:medium), class: 'image'), place %>
-      </div>
+  <div class="col-sm-6 col-md-3">
+    <div class="thumbnail">
+      <%= link_to (image_tag place.image.url(:medium), class: 'image'), place %>
     </div>
+  </div>
   <% end %>
 </div>
