@@ -4,6 +4,19 @@ class PlacesController < ApplicationController
 
   # GET /places
   # GET /places.json
+
+
+
+  def search
+    if params[:search].present?
+      @places = Place.search(params[:search])
+    else
+      @places = Place.all
+    end
+  end
+
+
+
   def index
     @places = Place.all
   end
@@ -12,6 +25,7 @@ class PlacesController < ApplicationController
   # GET /places/1.json
   def show
     @reviews = Review.where(place_id: @place.id)
+
   end
 
   # GET /places/new
@@ -44,6 +58,12 @@ class PlacesController < ApplicationController
   def update
     respond_to do |format|
       if @place.update(place_params)
+          if params[:images]
+          #===== The magic is here ;)
+          params[:images].each { |image|
+            @place.pictures.create(image: image)
+          }
+        end
         format.html { redirect_to @place, notice: 'Place was successfully updated.' }
         format.json { render :show, status: :ok, location: @place }
       else
@@ -69,8 +89,10 @@ class PlacesController < ApplicationController
       @place = Place.find(params[:id])
     end
 
+
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def place_params
-      params.require(:place).permit(:title, :description, :rating, :image)
+      params.require(:place).permit(:title, :description,:image, :rating, :latitude, :longitude)
     end
 end

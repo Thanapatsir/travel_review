@@ -31,6 +31,10 @@ gem 'bootstrap-sass', '~> 3.3', '>= 3.3.6'
 
 gem 'rack-cors', '~> 0.4.0'
 
+gem 'elasticsearch', '~> 1.0', '>= 1.0.15'
+
+gem 'searchkick'
+
 
 
 group :development, :test do

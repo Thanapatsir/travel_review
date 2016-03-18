@@ -1,33 +1,189 @@
 <%= form_for @place, html: { multipart: true } do |f| %>
-  <% if @place.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@place.errors.count, "error") %> prohibited this place from being saved:</h2>
+<% if @place.errors.any? %>
+<div id="error_explanation">
+  <h2><%= pluralize(@place.errors.count, "error") %>
+    prohibited this place from being saved:</h2>
 
-      <ul>
-      <% @place.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :title %><br>
-    <%= f.text_field :title %>
-  </div>
-  <div class="field">
-    <%= f.label :description %><br>
-    <%= f.text_area :description %>
-  </div>
-  <div class="field">
-    <%= f.label :rating %><br>
-    <%= f.text_field :rating %>
-  </div>
-  <div class="field">
-    <%= f.label :image %><br>
-    <%= f.file_field :image %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+  <ul>
+    <% @place.errors.full_messages.each do |message| %>
+    <li><%= message %></li>
+    <% end %>
+  </ul>
+</div>
 <% end %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">New trip</h3>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+
+      <div class="col-md-2">
+
+      </div>
+      <div class="col-md-8">
+        <div class="field">
+          <%= f.label :title %><br>
+          <%= f.text_field :title, class:"form-control"%>
+        </div>
+        <div class="field">
+          <%= f.label :description %><br>
+          <%= f.text_area :description, class:"form-control"%>
+        </div>
+        <div class="field">
+          <%= f.label :rating %><br>
+          <%= f.text_field :rating, class:"form-control"%>
+        </div>
+        <div class="field">
+          <%= f.label :image %><br>
+          <%= f.file_field :image, class:"form-control"%>
+        </div>
+    
+
+        <%= f.hidden_field :latitude %>
+        <%= f.hidden_field :longitude %>
+        <br>
+        <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+        <div id="map" class="span12" style="display:block;height:300px"></div>
+        <br>
+        <div class="actions">
+          <%= f.submit class:"btn btn-info"%>
+        </div>
+        <!-- <%= link_to 'Back', places_path %> -->
+      </div>
+
+      <style>
+        .controls {
+          margin-top: 10px;
+          border: 1px solid transparent;
+          border-radius: 2px 0 0 2px;
+          box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          height: 32px;
+          outline: none;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        #pac-input {
+          background-color: #fff;
+          font-family: Roboto;
+          font-size: 15px;
+          font-weight: 300;
+          margin-left: 12px;
+          padding: 0 11px 0 13px;
+          text-overflow: ellipsis;
+          width: 300px;
+        }
+        #pac-input:focus {
+          border-color: #4d90fe;
+        }
+
+        .pac-container {
+          font-family: Roboto;
+        }
+
+        #type-selector {
+          color: #fff;
+          background-color: #4d90fe;
+          padding: 5px 11px 0;
+        }
+
+        #type-selector label {
+          font-family: Roboto;
+          font-size: 13px;
+          font-weight: 300;
+        }
+        #target {
+          width: 345px;
+        }
+
+      </style>
+      <br>
+      <div class="col-md-2">
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // This example adds a search box to a map, using the Google Place Autocomplete feature. People can enter geographical searches. The search box will return a pick list containing a mix of places and predicted search terms. This example requires the
+    // Places library. Include the libraries=places parameter when you first load the API. For example: <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+    function initAutocomplete() {
+      var map = new google.maps.Map(document.getElementById('map'), {
+        center: {
+          lat: -33.8688,
+          lng: 151.2195
+        },
+        zoom: 13,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
+
+      // create result to append lat long text box
+      var resultlat = document.getElementById("resultlats");
+      var resultlng = document.getElementById("resultlngs");
+      // Create the search box and link it to the UI element.
+      var input = document.getElementById('pac-input');
+      var searchBox = new google.maps.places.SearchBox(input);
+      map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+      // Bias the SearchBox results towards current map's viewport.
+      map.addListener('bounds_changed', function () {
+        searchBox.setBounds(map.getBounds());
+      });
+
+      var markers = [];
+      // Listen for the event fired when the user selects a prediction and retrieve more details for that place.
+      searchBox.addListener('places_changed', function () {
+        var places = searchBox.getPlaces();
+
+        if (places.length == 0) {
+          return;
+        }
+
+        // Clear out the old markers.
+        markers.forEach(function (marker) {
+          marker.setMap(null);
+        });
+        markers = [];
+
+        // For each place, get the icon, name and location.
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(function (place) {
+          var icon = {
+            url: place.icon,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(25, 25)
+          };
+
+          // Create a marker for each place.
+          markers.push(new google.maps.Marker({map: map, icon: icon, title: place.name, position: place.geometry.location, draggable: true}));
+
+          for (var i = 0; i < markers.length; i++) {
+            var onemarker = markers[i];
+
+            // resultlats.innerHTML = onemarker.getPosition().lat(); resultlngs.innerHTML = onemarker.getPosition().lng();
+            $('#place_latitude').val(Number(onemarker.position.lat()))
+            $('#place_longitude').val(Number(onemarker.position.lng()))
+
+          }
+
+          if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        map.fitBounds(bounds);
+      });
+    }
+  </script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcn0b3h1NGv8n7L_fEE0TmjAUCXjBQkfI&libraries=places&callback=initAutocomplete" async defer></script>
+  <% end %>
