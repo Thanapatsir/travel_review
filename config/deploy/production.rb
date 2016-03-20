@@ -17,9 +17,9 @@
 # property set. Specify the username and a domain or IP for the server.
 # Don't use `:all`, it's a meta role.
 
-# role :app, %w{thanapat@128.199.116.209:1555}, my_property: :my_value
-# role :web, %w{thanapat@128.199.116.209:1555}, other_property: :other_value
-# role :db,  %w{thanapat@128.199.116.209:1555}
+role :app, %w{thanapat@128.199.116.209:1555}, my_property: :my_value
+role :web, %w{thanapat@128.199.116.209:1555}, other_property: :other_value
+role :db,  %w{thanapat@128.199.116.209:1555}
 
 
 
