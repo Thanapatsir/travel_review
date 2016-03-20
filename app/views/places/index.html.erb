@@ -1,4 +1,24 @@
-<% if !user_signed_in? %>
+<style>
+  .divider {
+    height: 50px;
+  }
+
+  section {
+    height: 500px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    overflow: auto;
+  }
+
+  .bg-1 {
+    background: url('/assets/krabi-beach.jpg') no-repeat center center fixed;
+    color: #fff;
+    background-size: cover;
+  }
+
+</style>
+
+<!-- <% if !user_signed_in? %>
 <div class="jumbotron">
   <div class="container">
     <h1>Eazy trip</h1>
@@ -10,14 +30,43 @@
   </div>
 </div>
 
+<% end %> -->
+
+<!-- <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="height: 10px; padding-left: 0; padding-right: 0;">
+                <img src="images/shape1.png" style="height: 100%; width:100%; margin-bottom: 13px">
+            </div>
+        </div> -->
+
+<% if !user_signed_in? %>
+<!--parallax 1 -->
+<div class="container-fluid">
+  <div class="row">
+    <section class="bg-1 text-center">
+      <h1 class="">Trip Review</h1>
+
+      <p class="lead">Sign Up now! and gain full access</p>
+    </section>
+  </div>
+</div>
+
 <% end %>
+
+<hr class="">
 
 <div class="row">
   <% @places.each do |place| %>
   <div class="col-sm-6 col-md-3">
     <div class="thumbnail">
-<%= link_to (image_tag place.image.url(:medium), class: 'image'), place %>
+      <%= link_to (image_tag place.image.url(:medium), class: 'image'), place %>
+      <div class="caption">
+        <strong>
+          <center><%= place.title %></center>
+        </strong>
+
+      </div>
     </div>
   </div>
+
   <% end %>
 </div>
